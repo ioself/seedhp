@@ -3,7 +3,7 @@
 <html lang="ja">
     <head>
         <meta charset="UTF-8">
-        <title>Seedのホームページ</title>
+        <title>SeedのBlog</title>
         <meta property="og:title" content="@seed_scriptのホームページ">
         <style>
             html{
@@ -26,6 +26,7 @@
                 height: 60px;
                 top:0px;
                 left:0px;
+                z-index:4294967296;
             }
             footer{
                 background-color: #888888;
@@ -60,45 +61,166 @@
                 cursor:pointer;
             }
             #bmain{
-                flex:1
+                flex:1;
+                position: relative;
             }
             .p_autoNewline_false{
                 white-space: nowrap;
+            }
+            #bmain_sp1{
+                position: absolute;
+                top:96px;
+                left:8px;
+            }
+            #bmain_sort{
+                position:absolute;
+                top:100px;
+                left:72px;
+            }
+            #bmain_urllist{
+                position: absolute;
+                top:160px;
+                left:16px;
+                width:100%;
+
+            }
+            .urlList{
+                position:absolute;
+                text-decoration: none;
+                color:black;
+            }
+            .urlList:hover{
+                text-decoration: underline;
+                cursor: pointer;
             }
         </style>
     </head>
     <body>
         <header>
             <span class="p_autoNewline_false">
-                <p id="header_p_1" title="このページはトップページです" onclick="javascript:func('header_p_1')" style="color:gold">Seed HP</p>
-                <p id="header_p_2" title="ブログへ移動します" onclick="javascript:func('header_p_2')">Blog</p>
+                <p id="header_p_1" title="トップページへ移動します" onclick="javascript:func('header_p_1')">Seed HP</p>
+                <p id="header_p_2" title="このページはブログサイトです" onclick="javascript:func('header_p_2')" style="color:gold">Blog</p>
             </span>
         </header>
         <div id="bmain">
-        <h1>Seed.Script</h1>
-        <h2>その他の機能は開発中です(サボるな仕事しろ早く作れ)</h2>
-        <h3>Blogはある程度作ってます。ぜひご覧ください</h3>
+        <h1>Seed Blog Site</h1>
+            <span id="bmain_sp1">ソート: </span>
+            <select id="bmain_sort" onchange="javascript:listsort()">
+                <option label="新しい順" value="0" selected></option>
+                <option label="古い順" value="1"></option>
+            </select>
+            <div id="bmain_urllist">
+
+            </div>
         </div>
         <footer>
             <p>aaa</p>
-            <p>bbb</p>
         </footer>
     </body>
     <script>
+        const imgs_list={
+            new_icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAH8AAABTCAYAAAC209heAAAH4UlEQVR4AexcSYxMXRT+tDFoEbNEaPNMtzkRu94IkWBFrLCQYEXY9NpKQrDAhgQrw8YGIeaYKfPMwhBDmjYTQ//91cn536tS71WVqnr3Dbfzn3vPPXc853v3nnPfq19Vc11ds6UE2qC+vrkK9i+ZFmhshAU/mdCntbbgp82QzMSCn0zc01pb8NNmSGZiwU8m7mmtLfhpMyQz8QI/mdZImNYW/IQB7lbXgu+2RsJ4C37CAHera8F3WyNhvAU/YYC71bXgu62RMN6CnzDA3eoWC767r+UjbgELfsQBLGX5FvxSrBfxvhb8iANYyvIt+KVYL+J9LfgRB7CU5VvwS7FexPta8CMOYCnLLxf4pazB9jVkAQu+IcOHYVoLfhhQMLSG4MEfOxY4fVro8GGgW7fCVe/ZU/qx/7p13v3q6512bFsMDRvmjLt2rTPOzJmO3I87cED6nDgBdO7s11Lq3PZYvVpkAaXBg9+6NdCpkxDBXLGicFWrWparfdu39+7Xpo2Mr22LyTmHjvzggTPOmDEq9c4HDABqaqRPly7AxInebbVm+HBpzzU+fKjSQPIWawYyj/ckc+YAo0Z515dac/MmsHVr4fT2rTPjnTsOP3q0w3tx2WBPmuTV0pG7db9715EHwJkF/8cPgDttzZrKqXr7NrB9e+HU2OishTvxyxcpDxkCtGoF37+pU6X61y/Jp0yR3C8dOVJqOc+jR8IHlJoFf+9eUXPcOGD2bOHDlP75A9y/Lyvq2BEYPFh4r3TCBKk5eFBytveLadq2BQYOlLZ0MZxPSoGklQbfX4kLFwDuTLZauRLpWIB8mOj6dWc19M9OKZPjydC9O9DcDOzZIzlPNb+jn8Flu3YyDt2TcIGlZsHnbtq8WZRl8LdkifBhSvXh5Jr0iCafTbrrnz0DnjwBnj+XFpMnS54rJfgqd8+jsgrnZsFnhHvxInD+vKi5cCHQv7/wYUlv3ZJdzPX4BX3TprEFoDtYwfTb+e6HyR1cykgVT82Cr9e1LVsA+jsegatWVVzpoiZ48wZ4/Vq68GjPFfRRVlsrbVKpzJwPc58+IstONdJnkPniRXZtxctmwWfAQxX51B86RA6YMQOYPl34sKRcH9fCk2rQIHKZNGIE0LWryHTH67WND0b2FZAt+b5Dx7p3j5LAySz43Omq8qZNwNevUuKbLn0wRPLvaXU10hE1o2o/IrBes6RSTk2uoE/9/YcPzu2AD8ynT9Iv15WPp0iHDlLvDipFEkgaHvB5vO7cKUrzTdmCBcKXms6aBezfn5/8ThvdxVyL20+zTNL7fSqFdLRP2e/fgIKay++7g71E7nweiTSU0q5dgPq+pUuBHj20xmzOo/znT1mD+mkpATy+x4+XEoNX4STlVZZc374AH2jySjoOr4YMKlUeYG5q5+dWkW/8Nm6UOn4U4d1fSv+enjkD8A1iPtJdmmum79/l+sa6oUOR8aaPNwC6FrT8XbvWkrj+u3LFKahrUImCz4e9qUmlgebhAp+qHzsGXLpEDuCRza9eUgJ092m5kJz37aNHgXykEb3XmHqF40NZU+O0qq0V3u3vRSL+//17Kbn9Pk88DfYYG0iLwNPwgU8TrF8P8P0435Bxx9JYlHMHMjdBCj7ndvvrujpKgFTK8fcikbKeBu6HmNc/DTD9Thwdp0J5OMHnBxUGaVSax6q+9//2TQxKedBEv69zusHn+ijP9veUkdx+v1cvSgC6DuEAQ8Eepw8n+FzZtm0Aj1Lyy5YBvBYyOOKJQFnQxFe2Hz/KrOqv+/VzglLd4dLCSa9eFZ6nFz9gscQPPszpxuyxT0tkUVMT0t/hKWa0PH8+OeddgJSCTfXKxzs6Z1Yw+ZDq1z/K3fT4MaC/EdD2el18+hRgkOtuHyAf3p1PI+zbB+g37sWLAX4I+vyZNWZI/TO/3vXuDagfT6X83ZHufo0PdOcbuuKp8cINPl+UMPjjcU+D88OPSfDdRzTf9Hnd79W6mqvfp6/n932eZKyz4NMK/9PfDAOp48dFvmgRwN/nSSn4lBE/H0TOzF2vx7+Xv2c7kt73GbfQffEWQ7m6EfIGqMrAnMVPuWGD+Eb+KFKPzOJHKb0H7+x8KcOR5s5F+kH08/dsR+I3/pcvyQEEnxy/Y/BWQ94QVRmat7hpafDdu4vro63nzQNOniycli/XnrlzvfLx+GaLVMrf37MNSXe/XvcM/GyLy3BTNMDninfsAPjxh3wxxKOWr18LJf2NgdccqVRmDd1SpiR3KbvdjRu52wUoDR78V68A3uFJ+hq3EIV5TDY0OH35P3x49eMNgeP/C5075zWqyM+eddbA8U+dEnm+lOOyvZL+fiFfvwrWmwX/8uXiVGN7Nd6RI959Kwk+vxXoGpjTJXmvxKl59y7zoTH4Zk8XFTz4OrPNjVvAgm8cAnMLiAr45iwU45kt+DEGN59qFvx8FopxvQU/xuDmU82Cn89CMa634McY3HyqWfDzWSjG9Rb8GIObT7Wog59PP1vvYwELvo9x4l5lwY87wj76WfB9jBP3Kgt+3BH20c+C72OcuFdZ8OOOsI9+Fnwf48S9Kq7gxx23suhnwS+LGaM5iAU/mriVZdUW/LKYMZqDWPCjiVtZVm3BL4sZozmIBT+auJVl1Rb8spgxmoMkDfxoolShVVvwK2TY0A9bXY0qtCShX6hdYHktwH/koqEB/wEAAP//RBQBMQAAAAZJREFUAwCZbHm8C83KHAAAAABJRU5ErkJggg=="
+        }
         const Self=globalThis.location.origin+"/seedhp/"
         const sites={
             "home":"",
-            "blog":"article/blog",
-
+            "blog":"article/blog"
         }
-        function func(document_id){
-            const obj=document.getElementById(document_id)
-            if (document_id==="header_p_1"){
-                window.scrollTo({top:0,left:0,behavior:"smooth"})
-                return 0
-            }else if (document_id==="header_p_2"){
-                location.href=(Self+sites.blog+"?from=home&jumpfrom=site")
+        const pr=new URLSearchParams(location.search)
+        //[[Name,Url,UnixTime,Hovermsg]...]
+        let article
+        !async function(){
+            if (pr.get("debug")=="1"){
+                article=[
+                    ["Test1","article/blog/00000000.html",1780034274014,"デバッグ用1"],
+                    ["Test2","article/blog/00000001.html",1780034274019,"デバッグ用2"],
+                    ["Test3","https://google.com:443",18319842,"(Google)"]
+                ]
+            }else{
+                article=await fetch("https://ioself.github.io/seedhp/blog_article.json").then(v=>v.json())
             }
-        }
+            //huruijun
+            globalThis.article_s0=[]
+            //atarasiijun
+            globalThis.article_s1=[]
+            /**@param {string} document_id@param {string|undefined} p1,p2*/
+            function func(document_id,p1=undefined,p2=undefined){
+                const obj=document.getElementById(document_id)
+                if (document_id==="header_p_1"){
+                    location.href=Self+sites.home
+                    return 0
+                }else if (document_id==="header_p_2"){
+                    window.scrollTo({top:0,left:0,behavior:"smooth"})
+                    return 0
+                }else if (document_id==="null::url"){
+                    if (p1.startsWith("http://")||p1.startsWith("https://")){
+                        location.href=p1
+                        return 0
+                    }else if (p1.startsWith("/")){
+                        location.href=Self+p1.slice(1)
+                    }else{
+                        location.href=Self+sites.blog+"/"+p1
+                    }
+                }
+            }
+            async function listsort(isCreate=false){
+                /**@type {HTMLSelectElement}*/
+                const s=document.getElementById("bmain_sort")
+                const d=new Date()
+                await new Promise((resolve,reject)=>{
+                    s.disabled=true
+                    if (isCreate){
+                        article_s0=structuredClone(article)
+                        article_s0.sort((a,b)=>b[2]-a[2])
+                        article_s1=structuredClone(article)
+                        article_s1.sort((a,b)=>a[2]-b[2])
+                    }else{
+                    /**@type {Array<Array<string|number>>}*/
+                        const using=globalThis["article_s"+s.value]
+                        /**@type {HTMLDivElement}*/
+                        const b=document.getElementById("bmain_urllist")
+                        b.innerHTML=""
+                        let i=0
+                        for (const [name,url,time,hovermsg=""] of using){
+                            const e=document.createElement("p")
+                            e.classList.add("urlList")
+                            e.textContent=name
+                            e.onclick=function(){func("null::url",url)}
+                            e.style.top=(16+i*24)+"px"
+                            e.style.left="5%"
+                            e.title=hovermsg
+                            b.appendChild(e)
+
+                            const f=document.createElement("p")
+                            f.classList.add("urlList")
+                            f.textContent=new Date(time).toLocaleString()
+                            f.style.top=(16+i*24)+"px"
+                            f.style.left="60%"
+                            f.title=f.textContent+"に公開された記事"
+                            b.appendChild(f)
+
+                            if (d.getTime()-time<1209600000/*14 Days*/){
+                                const g=document.createElement("img")
+                                g.classList.add("urlList")
+                                g.src=imgs_list.new_icon
+                                g.style.width="36px"
+                                g.style.height="auto"
+                                g.style.top=(36+i*24)+"px"
+                                g.style.left="80%"
+                                g.title="14日以内に公開されている記事"
+                                b.appendChild(g)
+                            }
+                            i++
+                        }
+                    }
+                    resolve()
+                })
+                s.disabled=false
+            }
+            listsort(true)
+            listsort(false)
+            globalThis.listsort=listsort
+            globalThis.func=func
+        }()
     </script>
 </html>
