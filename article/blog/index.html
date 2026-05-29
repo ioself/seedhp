@@ -146,7 +146,7 @@
                     ["Test3","https://google.com:443",18319842,"(Google)"]
                 ]
             }else{
-                article=await fetch("https://ioself.github.io/seedhp/blog_article.json").then(v=>v.json())
+                article=await fetch("https://ioself.github.io/seedhp/blog_article.json?"+Date.now()).then(v=>v.json())
             }
             //huruijun
             globalThis.article_s0=[]
