@@ -1,0 +1,143 @@
+<!--Home Site.-->
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>Seedのホームページ</title>
+        <meta property="og:title" content="@seed_scriptのホームページ">
+        <style>
+            html{
+                scroll-behavior: smooth;
+                height:100%;
+            }
+            body{
+                height:100%;
+                display:flex;
+                flex-direction: column;
+                min-height: 100vh;
+                position:relative;
+                margin:0;
+                padding-top: 60px;
+            }
+            header{
+                position: fixed;
+                background-color: #404040;
+                width: 100%;
+                height: 60px;
+                top:0px;
+                left:0px;
+            }
+            footer{
+                background-color: #888888;
+                width: 100%;
+                height: 60px;
+                left:0px;
+                bottom:0;
+                left:0;
+                margin:0;
+            }
+            #header_p_1{
+                position: absolute;
+                color:white;
+                top:-4px;
+                left:16px;
+                font-size:20px;
+                text-decoration: none;
+            }
+            #header_p_1:hover{
+                text-decoration: underline;
+                cursor:pointer;
+            }
+            #header_p_2{
+                position:absolute;
+                color:white;
+                top:0px;
+                left:128px;
+                text-decoration: none;
+            }
+            #header_p_2:hover{
+                text-decoration: underline;
+                cursor:pointer;
+            }
+            #bmain{
+                flex:1
+            }
+            .p_autoNewline_false{
+                white-space: nowrap;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <span class="p_autoNewline_false">
+                <p id="header_p_1" title="このページはトップページです" onclick="javascript:func('header_p_1')">Seed HP</p>
+                <p id="header_p_2" title="ブログへ移動します" onclick="javascript:func('header_p_2')">Blog</p>
+            </span>
+        </header>
+        <div id="bmain">
+        <h1>Seed.Script</h1>
+        <h2>a</h2>
+        <h2>b</h2>
+        <h2>c</h2>
+        <h2>d</h2>
+        <h2>e</h2>
+        <h2>f</h2>
+        <h2>g</h2>
+        <h2>h</h2>
+        <h2>i</h2>
+        <h2>j</h2>
+        <h2>k</h2>
+        <h2>l</h2>
+        <h2>m</h2>
+        <h2>n</h2>
+        <h2>o</h2>
+        <h2>p</h2>
+        <h2>q</h2>
+        <h2>r</h2>
+        <h2>s</h2>
+        <h2>t</h2>
+        <h2>u</h2>
+        <h2>v</h2>
+        <h2>w</h2>
+        <h2>x</h2>
+        <h2>y</h2>
+        <h2>z</h2>
+        </div>
+        <footer>
+            <p>aaa</p>
+            <p>bbb</p>
+        </footer>
+    </body>
+    <script>
+        const Self=globalThis.location.origin+"/seedhp/"
+        const sites={
+            "home":"",
+            "blog":"article/blog",
+
+        }
+        function func(document_id,p1=undefined,p2=undefined){
+            const obj=document.getElementById(document_id)
+            if (document_id==="header_p_1"){
+                location.href=Self+sites.home
+                return 0
+            }else if (document_id==="header_p_2"){
+                location.href=Self+sites.blog
+                return 0
+            }else if (document_id==="null::url"){
+                if (p1.startsWith("http://")||p1.startsWith("https://")){
+                    location.href=p1
+                    return 0
+                }else if (p1.startsWith("/")){
+                    location.href=Self+p1.slice(1)
+                }else{
+                    location.href=Self+sites.blog+"/"+p1
+                }
+            }
+//memo
+            if (document_id==="scroll"){
+                window.scrollTo({top:0,left:0,behavior:"smooth"})
+                return 0
+            }
+        }
+    </script>
+</html>
