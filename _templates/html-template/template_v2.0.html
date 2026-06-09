@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            html{
+                scroll-behavior: smooth;
+                height:100%;
+            }
+            body{
+                position:relative;
+                display:flex;
+                height:100%;
+                flex-direction: column;
+                min-height: 100vh;
+                margin:0;
+                padding-top:60px;
+            }
+            header{
+                position:fixed;
+                background-color: #404040;
+                width:100%;
+                height:60px;
+                top:0px;
+                left:0px;
+                z-index: 65535;
+                white-space: nowrap;
+            }
+            footer{
+                position: relative;/*e38390e382b0e3818ce587bae381a6e3818de3819fe38289e6b688e38197e381bee38197e38287e38186e38082e4b880e5bf9ce69bb8e38184e3819fe38282e381aee381aae381aee381a7e3828fe3818be38289e381aae38184e38082*/
+                background-color: #888888;
+                width:100%;
+                height:60px;
+                min-height:60px;
+                left:0px;
+                bottom:0px;
+                margin:0px;
+                white-space: nowrap;
+            }
+            .header_all{
+                position:absolute;
+                color:white;
+                text-decoration: none;
+            }
+            .header_all:hover{
+                text-decoration: underline;
+                cursor: pointer;
+            }
+            .links_{
+                position: absolute;
+                text-decoration: none;
+            }
+            .links_:hover{
+                text-decoration: underline;
+                cursor: pointer;
+            }
+            #div1{
+                position: relative;
+                flex: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <p 
+            id="header_p1"
+            class="header_all"
+            title="トップページへ移動します"
+            style="top:-4px;left:16px;font-size:20px;"
+            onclick="javascript:func('null::url','/')">Seed HP</p>
+            <p
+            id="header_p2"
+            class="header_all"
+            title="ブログへ移動します"
+            style="top:0px;left:128px"
+            onclick="javascript:func('null::url','/article/blog')">Blog</p>
+            <p
+            id="header_p3"
+            class="header_all"
+            title="ブログリストへ移動します"
+            style="top:0px;left:184px"
+            onclick="javascript:func('null::url','/article/bloglist')">BlogList</p>
+        </header>
+        <div id="div1">
+            <h1>ブログリスト</h1>
+            
+        </div>
+        <footer>
+            <p
+            id="footer_p1"
+            class="links_"
+            title="Xに移動する"
+            style="position:absolute;top:0px;left:16px;width:max-content;"
+            onclick="javascript:func('null::url','https:\/\/x.com/seed_script')"
+            >Seed X</p>
+        </footer>
+    </body>
+    <script>
+        /*
+        Result Code Rules
+        0b sabbbbbb bbbbcccc cccccccc dddddddd
+        s: CheckSum(0:ok 1:no)-----------------------------------1  bit
+        a: 0 (this program create error:0 else:1)----------------1  bit
+        b: Function ID-------------------------------------------10 bit
+        c: Function SIKIBETU ID(Extensions ID)-------------------12 bit
+        d: Result Code-------------------------------------------8  bit
+        */
+        const home=location.origin+"/seedhp/"
+        const thisPath="article/bloglist/"
+        function func(cmd,...parametor){//FunctionID:0000000000
+            if (cmd==="screen_scroll"){//sikibetuID:000000000000
+                try{
+                    const moveToX=parametor[0]
+                    const moveToY=parametor[1]
+                    if (moveToX===undefined||moveToY===undefined){
+                        return 0b10000000000000000000000000000000
+                    }
+                    if (typeof moveToX!=="number"||typeof moveToY!=="number"){
+                        return 0b10000000000000000000000000000001
+                    }
+                    window.scrollTo({top:moveToX,left:moveToY,behavior:"smooth"})
+                    return 0b00000000000000000000000000000000
+                }catch(e){
+                    return 0b10000000000000000000000000000010
+                }
+            }else if (cmd==="null::url"){//sikibetuID:000000000001
+                try{
+                    /**@type {string}*/
+                    const aurl=parametor[0]
+                    if (aurl.startsWith("http://")||aurl.startsWith("https://")){
+                        location.href=aurl
+                        return 0b00000000000000000000000100000000
+                    }else if (aurl.startsWith("/")){
+                        location.href=home+aurl.slice(1)
+                        return 0b00000000000000000000000100000001
+                    }else{
+                        location.href=home+thisPath+aurl
+                        return 0b00000000000000000000000100000010
+                    }
+                }catch(e){
+                    return 0b10000000000000000000000100000000
+                }
+            }
+        }
+    </script>
+</html>
