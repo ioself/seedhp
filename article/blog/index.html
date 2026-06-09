@@ -26,7 +26,7 @@
                 height: 60px;
                 top:0px;
                 left:0px;
-                z-index:4294967296;
+                z-index:65535;
             }
             footer{
                 background-color: #888888;
@@ -59,6 +59,17 @@
             #header_p_2:hover{
                 text-decoration: underline;
                 cursor:pointer;
+            }
+            #header_p_3{
+                position: absolute;
+                color: white;
+                top: 0px;
+                left:184px;
+                text-decoration: none;
+            }
+            #header_p_3:hover{
+                text-decoration: underline;
+                cursor: pointer;
             }
             #bmain{
                 flex:1;
@@ -93,7 +104,6 @@
                 text-decoration: underline;
                 cursor: pointer;
             }
-            
             .links_{
                 position: absolute;
                 text-decoration: none;
@@ -102,6 +112,12 @@
                 text-decoration: underline;
                 cursor: pointer;
             }
+            #footer_p_1{
+                position:relative;
+                top:0px;
+                left:16px;
+                width: max-content;
+            }
         </style>
     </head>
     <body>
@@ -109,6 +125,7 @@
             <span class="p_autoNewline_false">
                 <p id="header_p_1" title="トップページへ移動します" onclick="javascript:func('header_p_1')">Seed HP</p>
                 <p id="header_p_2" title="このページはブログサイトです" onclick="javascript:func('header_p_2')" style="color:gold">Blog</p>
+                <p id="header_p_3" title="ブログリスト(ブログのまとめ)に移動します" onclick="javascript:func('header_p_3')">BlogList</p>
             </span>
         </header>
         <div id="bmain">
@@ -123,7 +140,7 @@
             </div>
         </div>
         <footer>
-            <p onclick="javascript:func('null::url','https:\/\/x.com/seed_script')" class="links_">Seed X</p>
+            <p onclick="javascript:func('null::url','https:\/\/x.com/seed_script')" class="links_" id="footer_p_1">Seed X</p>
         </footer>
     </body>
     <script>
@@ -133,26 +150,40 @@
         const Self=globalThis.location.origin+"/seedhp/"
         const sites={
             "home":"",
-            "blog":"article/blog"
+            "blog":"article/blog",
+            "bloglist":"article/bloglist",
         }
         const pr=new URLSearchParams(location.search)
-        //[[Name,Url,UnixTime,Hovermsg]...]
-        let article
+        //[[Name,Url,UnixTime*1000,Hovermsg]...]
+        //JavaScript Times is $$Unix Time \times 1000$$.
+        /**@type {Array<Array<string|number>>}*/
+        let article=[]
+        /**@type {Cache}*/
+        globalThis.articles_aboutData=[]
+        //huruijun
+        globalThis.article_s0=[]
+        //atarasiijun
+        globalThis.article_s1=[]
         !async function(){
-            if (pr.get("debug")=="1"){
+            articles_aboutData=await caches.open("fetch_data")
+            if (pr.get("debug")=="1"||(!navigator.onLine&&await articles_aboutData.match("articleData")===undefined)){
                 article=[
-                    ["Test1","article/blog/00000000.html",1780034274014,"デバッグ用1"],
-                    ["Test2","article/blog/00000001.html",1780034274019,"デバッグ用2"],
-                    ["Test3","https://google.com:443",18319842,"(Google)"]
+                    ["blog_0000.html","blog_0000.html",2147483647000,"blog 0000"],
+                    ["blog_0001.html","blog_0001.html",1780159770738,"blog 0001"]
                 ]
+            }else if (!navigator.onLine||(localStorage.getItem("fetch_data/article_blog/lastFetchDate")!==null&&Date.now()-localStorage.getItem("fetch_data/article_blog/lastFetchDate")<(localStorage.getItem("config/autoFetchTimesMilli")??3600000))){
+                article=await (await articles_aboutData.match("articleData")).json()
             }else{
-                article=await fetch("https://ioself.github.io/seedhp/blog_article.json?"+Date.now()).then(v=>v.json())
+                const fd=await fetch("https://ioself.github.io/seedhp/blog_article.json?"+Date.now())
+                article=await fd.json()
+                const p=new Response(fd)
+                articles_aboutData.put("articleData",p)
+                localStorage.setItem("fetch_data/article_blog/lastFetchDate",Date.now())
             }
-            //huruijun
-            globalThis.article_s0=[]
-            //atarasiijun
-            globalThis.article_s1=[]
-            /**@param {string} document_id@param {string|undefined} p1,p2*/
+            if (localStorage.getItem("config/autoFetchTimesMilli")===null){
+                localStorage.setItem("config/autoFetchTimesMilli",3600000)
+            }
+            /**@param {string} document_id@param {string|undefined} p1@param {string|undefined} p2*/
             function func(document_id,p1=undefined,p2=undefined){
                 const obj=document.getElementById(document_id)
                 if (document_id==="header_p_1"){
@@ -170,6 +201,8 @@
                     }else{
                         location.href=Self+sites.blog+"/"+p1
                     }
+                }else if (document_id==="header_p_3"){
+                    location.href=Self+sites.bloglist
                 }
             }
             async function listsort(isCreate=false){
@@ -208,13 +241,13 @@
                             f.title=f.textContent+"に公開された記事"
                             b.appendChild(f)
 
-                            if (d.getTime()-time<1209600000/*14 Days*/){
+                            if (Math.abs(d.getTime()-time)<1209600000/*+-14 Days*/){
                                 const g=document.createElement("img")
                                 g.classList.add("urlList")
                                 g.src=imgs_list.new_icon
                                 g.style.width="36px"
                                 g.style.height="auto"
-                                g.style.top=(36+i*24)+"px"
+                                g.style.top=(32+i*24)+"px"
                                 g.style.left="80%"
                                 g.title="14日以内に公開されている記事"
                                 b.appendChild(g)
