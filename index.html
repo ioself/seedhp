@@ -59,13 +59,23 @@
                 text-decoration: underline;
                 cursor:pointer;
             }
+            #header_p_3{
+                position: absolute;
+                color: white;
+                top: 0px;
+                left:184px;
+                text-decoration: none;
+            }
+            #header_p_3:hover{
+                text-decoration: underline;
+                cursor: pointer;
+            }
             #bmain{
                 flex:1
             }
             .p_autoNewline_false{
                 white-space: nowrap;
             }
-            
             .links_{
                 position: absolute;
                 text-decoration: none;
@@ -74,6 +84,12 @@
                 text-decoration: underline;
                 cursor: pointer;
             }
+            #footer_p_1{
+                position:relative;
+                top:0px;
+                left:16px;
+                width: max-content;
+            }
         </style>
     </head>
     <body>
@@ -81,6 +97,7 @@
             <span class="p_autoNewline_false">
                 <p id="header_p_1" title="このページはトップページです" onclick="javascript:func('header_p_1')" style="color:gold">Seed HP</p>
                 <p id="header_p_2" title="ブログへ移動します" onclick="javascript:func('header_p_2')">Blog</p>
+                <p id="header_p_3" title="ブログリスト(ブログのまとめ)に移動します" onclick="javascript:func('header_p_3')">BlogList</p>
             </span>
         </header>
         <div id="bmain">
@@ -89,7 +106,7 @@
         <h3>Blogはある程度作ってます。ぜひご覧ください</h3>
         </div>
         <footer>
-            <p onclick="javascript:func('null::url','https:\/\/x.com/seed_script')" class="links_">Seed X</p>
+            <p onclick="javascript:func('null::url','https:\/\/x.com/seed_script')" class="links_" id="footer_p_1">Seed X</p>
         </footer>
     </body>
     <script>
@@ -97,15 +114,26 @@
         const sites={
             "home":"",
             "blog":"article/blog",
-
+            "bloglist":"article/bloglist",
         }
-        function func(document_id){
+        function func(document_id,p1=undefined,p2=undefined){
             const obj=document.getElementById(document_id)
             if (document_id==="header_p_1"){
                 window.scrollTo({top:0,left:0,behavior:"smooth"})
                 return 0
             }else if (document_id==="header_p_2"){
-                location.href=(Self+sites.blog+"?from=home&jumpfrom=site")
+                location.href=Self+sites.blog
+            }else if (document_id==="null::url"){
+                if (p1.startsWith("http://")||p1.startsWith("https://")){
+                    location.href=p1
+                    return 0
+                }else if (p1.startsWith("/")){
+                    location.href=Self+p1.slice(1)
+                }else{
+                    location.href=Self+sites.blog+"/"+p1
+                }
+            }else if (document_id==="header_p_3"){
+                location.href=Self+sites.bloglist
             }
         }
     </script>
