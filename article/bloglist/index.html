@@ -1,0 +1,288 @@
+<!-- template.html Version : 2.0-->
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            html{
+                scroll-behavior: smooth;
+                height:100%;
+            }
+            body{
+                position:relative;
+                display:flex;
+                height:100%;
+                flex-direction: column;
+                min-height: 100vh;
+                margin:0;
+                padding-top:60px;
+            }
+            header{
+                position:fixed;
+                background-color: #404040;
+                width:100%;
+                height:60px;
+                top:0px;
+                left:0px;
+                z-index: 65535;
+                white-space: nowrap;
+            }
+            footer{
+                position: relative;/*e38390e382b0e3818ce587bae381a6e3818de3819fe38289e6b688e38197e381bee38197e38287e38186e38082e4b880e5bf9ce69bb8e38184e3819fe38282e381aee381aae381aee381a7e3828fe3818be38289e381aae38184e38082*/
+                background-color: #888888;
+                width:100%;
+                height:60px;
+                min-height:60px;
+                left:0px;
+                bottom:0px;
+                margin:0px;
+                white-space: nowrap;
+            }
+            .header_all{
+                position:absolute;
+                color:white;
+                text-decoration: none;
+            }
+            .header_all:hover{
+                text-decoration: underline;
+                cursor: pointer;
+            }
+            .links_{
+                position: absolute;
+                text-decoration: none;
+            }
+            .links_:hover{
+                text-decoration: underline;
+                cursor: pointer;
+            }
+            #div1{
+                position: relative;
+                flex: 1;
+            }
+            #div1_div1_table1{
+                position: absolute;
+            }
+            .div1_table1_thead_element{
+                position:relative;
+                text-align: end;
+                white-space: nowrap;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <p 
+            id="header_p1"
+            class="header_all"
+            title="トップページへ移動します"
+            style="top:-4px;left:16px;font-size:20px;"
+            onclick="javascript:func('null::url','/')">Seed HP</p>
+            <p
+            id="header_p2"
+            class="header_all"
+            title="ブログへ移動します"
+            style="top:0px;left:128px"
+            onclick="javascript:func('null::url','/article/blog')">Blog</p>
+            <p
+            id="header_p3"
+            class="header_all"
+            title="このページはブログリストです"
+            style="top:0px;left:184px;color:gold"
+            onclick="javascript:func('screen_scroll',0,0)">BlogList</p>
+        </header>
+        <div id="div1">
+            <h1>ブログリスト</h1><br>
+            <span id="div1_span1" style="position:absolute;top:96px;left:8px">ソート:</span>
+            <select id="div1_select1" style="position:absolute;top:100px;left:72px" onchange="javascript:listsort(false)">
+                <option label="新しい順" value="0"></option>
+                <option label="古い順" value="1"></option>
+            </select>
+            <div id="div1_div1" style="position: absolute;top:160px;left:16px;width:100%">
+                <table id="div1_div1_table1">
+                    <thead id="div1_div1_table1_thead">
+                        <tr id="div1_div1_table1_thead_tr1">
+                            <th
+                            id="div1_div1_table1_thead_tr1_th1"
+                            class="div1_table1_thead_element"
+                            style="padding-inline-start: 32px;">名前</th>
+                            <th
+                            id="div1_div1_table1_thead_tr1_th2"
+                            class="div1_table1_thead_element"
+                            style="padding-inline-start: 256px;">日付</th>
+                            <th
+                            id="div1_div1_table1_thead_tr1_th3"
+                            class="div1_table1_thead_element"
+                            style="padding-inline-start: 32px;"> </th>
+                        </tr>
+                    </thead>
+                    <tbody id="div1_div1_table1_tbody">
+                        <!-- This Tbody Do Not Edit. Sort Timing is All Clear.-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <footer>
+            <p
+            id="footer_p1"
+            class="links_"
+            title="Xに移動する"
+            style="position:absolute;top:0px;left:16px;width:max-content;"
+            onclick="javascript:func('null::url','https:\/\/x.com/seed_script')"
+            >Seed X</p>
+        </footer>
+    </body>
+    <script>
+        /*
+        Result Code Rules(hex)
+        0x saaabbbb cccccccc
+        s:CheckSum(0~7:ok,8~f:ng)
+        a:FunctionID
+        b:Function_SIKIBETU_ID
+        c:ResultID
+        */
+        const home=location.origin+"/seedhp/"
+        const thisPath="article/bloglist/"
+        function func(cmd,...parametor){//FunctionID:000
+            if (cmd==="screen_scroll"){//sikibetuID:0000
+                try{
+                    const moveToX=parametor[0]
+                    const moveToY=parametor[1]
+                    window.scrollTo({top:moveToX,left:moveToY,behavior:"smooth"})
+                    return 0x0000000000000000n
+                }catch(e){
+                    return 0x8000000000000000n
+                }
+            }else if (cmd==="null::url"){//sikibetuID:0001
+                try{
+                    /**@type {string}*/
+                    const aurl=parametor[0]
+                    if (aurl.startsWith("http://")||aurl.startsWith("https://")){
+                        location.href=aurl
+                        return 0x0000000100000000n
+                    }else if (aurl.startsWith("/")){
+                        location.href=home+aurl.slice(1)
+                        return 0x0000000100000001n
+                    }else{
+                        location.href=home+thisPath+aurl
+                        return 0x0000000100000002n
+                    }
+                }catch(e){
+                    return 0x8000000100000000n
+                }
+            }
+        }
+    </script>
+    <script type="module" defer>
+        const imgs_list={
+            new_icon:"data:image/png;base64,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"
+        }
+        /*
+        Units: [Name,UnixTime*1000,HoverMsg,listViewURL,[[ArticleName,ArticleURL]...]]
+        globalThis.article=[Units...]
+        */
+        globalThis.article=[]
+        const pr=new URLSearchParams(location.search)
+        /**@type {Cache}*/
+        globalThis.articles_aboutData=[]
+        //huruijun
+        globalThis.article_s0=[]
+        //atarasiijun
+        globalThis.article_s1=[]
+        articles_aboutData=await caches.open("fetch_data")
+        if (pr.get("debug")=="1"||(!navigator.onLine&&await articles_aboutData.match("blogListData")===undefined)){
+            article=[
+                ["Home Site.",1780246184326,"home page","/",[["at1","article_1"],["at2","article_2"]]],
+                ["Blog Site.",1780246270366,"blog home","/article/blog",[["at3","article_3"],["at4","article_4"]]],
+                ["This Site.",1780252057962,"this page","",[["at5","article_5"],["at6","article_6"]]]
+            ]
+        }else if (!navigator.onLine||(localStorage.getItem("fetch_data/article_bloglist/lastFetchDate")!==null&&Date.now()-localStorage.getItem("fetch_data/article_bloglist/lastFetchDate")<(localStorage.getItem("config/autoFetchTimesMilli")??3600000))){
+            article=await (await articles_aboutData.match("blogListData")).json()
+        }else{
+            const fd=await fetch("https://ioself.github.io/seedhp/bloglist_articleLists.json?"+Date.now())
+            article=await fd.json()
+            const p=new Response(JSON.stringify(article))
+            articles_aboutData.put("blogListData",p)
+            localStorage.setItem("fetch_data/article_bloglist/lastFetchDate",Date.now())
+        }
+        if (localStorage.getItem("config/autoFetchTimesMilli")===null){
+            localStorage.setItem("config/autoFetchTimesMilli",3600000)
+        }
+        async function listsort(isCreate=false){//FunctionID:001
+            /**@type {HTMLSelectElement}*/
+            const sl=document.getElementById("div1_select1")
+            const d=new Date()
+            await new Promise((resolve,reject)=>{
+                sl.disabled=true
+                if (isCreate){
+                    article_s0=structuredClone(article)
+                    article_s1=structuredClone(article)
+                    article_s0.sort((a,b)=>b[1]-a[1])
+                    article_s1.sort((a,b)=>a[1]-b[1])
+                }else{
+                    /**@type {Array<Array>}*/
+                    const using=globalThis["article_s"+sl.value]
+                    /**@type {HTMLTableSectionElement}*/
+                    const b=document.getElementById("div1_div1_table1_tbody")
+                    b.innerHTML=""
+                    for (let i=0;i<using.length;i++){
+                        /**@type {string}*/
+                        const name=using[i][0]
+                        /**@type {number}*/
+                        const time=using[i][1]
+                        /**@type {string}*/
+                        const hoverMsg=using[i][2]
+                        /**@type {string}*/
+                        const url=using[i][3]
+                        /**@type {Array<Array<string>>}*/
+                        const posts=using[i][4]
+
+                        const tr=document.createElement("tr")
+
+                        const tdname=document.createElement("td")
+                        tdname.classList.add("div1_table1_thead_element")
+                        tdname.style.paddingInlineStart="32px"
+                        const tdname_span=document.createElement("span")
+                        tdname_span.classList.add("div1_table1_thead_element","links_")
+                        tdname_span.textContent=name
+                        tdname_span.onclick=function(ev){func("null::url",url)}
+                        tdname_span.title=hoverMsg
+
+                        const tdtime=document.createElement("td")
+                        tdtime.classList.add("div1_table1_thead_element")
+                        tdtime.style.paddingInlineStart="256px"
+                        const tdtime_span=document.createElement("span")
+                        tdtime_span.classList.add("div1_table1_thead_element","links_")
+                        tdtime_span.textContent=new Date(time).toLocaleString()
+                        tdtime_span.title=tdtime_span.textContent+" に編集されました"
+
+                        tdname.appendChild(tdname_span)
+                        tdtime.appendChild(tdtime_span)
+                        tr.appendChild(tdname)
+                        tr.appendChild(tdtime)
+
+                        if (Math.abs(d.getTime()-time)<1209600000/*+-14 Days*/){
+                            const tdnewicon=document.createElement("td")
+                            tdnewicon.classList.add("div1_table1_thead_element")
+                            tdnewicon.style.paddingInlineStart="32px"
+                            const tdnewicon_img=document.createElement("img")
+                            tdnewicon_img.classList.add("div1_table1_thead_element","links_")
+                            tdnewicon_img.src=imgs_list.new_icon
+                            tdnewicon_img.style.width="38px"
+                            tdnewicon_img.style.height="auto"
+                            tdnewicon_img.title="14日以内に編集されました"
+
+                            tdnewicon.appendChild(tdnewicon_img)
+                            tr.appendChild(tdnewicon)
+                        }
+
+                        b.appendChild(tr)
+                    }
+                }
+                resolve()
+            })
+            sl.disabled=false
+        }
+        listsort(true).then(value=>listsort(false))
+        globalThis.listsort=listsort
+    </script>
+</html>
