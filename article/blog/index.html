@@ -176,7 +176,7 @@
             }else{
                 const fd=await fetch("https://ioself.github.io/seedhp/blog_article.json?"+Date.now())
                 article=await fd.json()
-                const p=new Response(article)
+                const p=new Response(JSON.stringify(article))
                 articles_aboutData.put("articleData",p)
                 localStorage.setItem("fetch_data/article_blog/lastFetchDate",Date.now())
             }
