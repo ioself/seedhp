@@ -1,0 +1,179 @@
+<!--template.html v3.0 dev3 custom-->
+<!DOCTYPE html>
+<html lang="ja">
+    <!--element IDの付け方-->
+    <!--bodyの中の要素の場合は、<親要素のID>_<自分の要素(div,p,span...)><親要素内のその要素の出現回数>-->
+    <!--それ以外の要素の場合は最初に"_"を付ける-->
+    <!--body直下ならbodyは略して問題ない。-->
+    <!--親要素内で絶対に1つしか作らない要素の場合は、数字を書かなくても良い。-->
+    <head id="_head1">
+        <meta charset="UTF-8">
+        <style id="_head1_style1">
+            html{
+                scroll-behavior: smooth;
+                height: 100%;
+                width: 100%;
+            }
+            body{
+                position:relative;
+                display: flex;
+                height:100%;
+                flex-direction: column;/*これなんなんだろ。よく分からん。今度調べること忘れずに。*/
+                min-height: 100vh;
+                margin: 0;
+                padding-top: 60px;
+            }
+            header{
+                position: fixed;
+                display: flex;/*flexとは?*/
+                background-color: #404040;
+                width: 100%;
+                height:60px;
+                max-height:60px;
+                top:0px;
+                left:0px;
+                z-index:32767;
+                white-space: nowrap;/*正直これもよく分かってない*/
+            }
+            footer{
+                position:relative;
+                background-color: #888888;
+                width: 100%;
+                min-width: 100vw;
+                height:60px;
+                max-height: max-content;
+                bottom:0px;
+                left:0px;
+                margin:0px;
+                white-space: nowrap;
+            }
+            .header_el{
+                position:relative;
+                color:white;
+                text-decoration: none;
+            }
+            .header_el:hover{
+                text-decoration: underline;
+                cursor: pointer;
+            }
+            .header_el_top_node{
+                position:relative;
+                max-height: 60px;
+                max-width: max-content;
+                white-space: nowrap;
+                padding-left:24px;
+                /*padding-top: 16px;*/
+                align-items: center;
+                display:flex;
+            }
+            .links_el{
+                position:absolute;
+                text-decoration: none;
+            }
+            .links_el:hover{
+                text-decoration: underline;
+                cursor: pointer;
+            }
+            #div{
+                position:relative;
+                display: flex;
+                flex: 1;
+            }
+            #header_div{
+                position:relative;
+                min-width: 100%;
+                max-height: 100%;
+                flex:1;
+                white-space:nowrap;
+                display:flex;
+            }
+        </style>
+    </head>
+    <body id="body">
+        <header id="header">
+            <div id="header_div">
+                <span id="header_div_span1" class="header_el_top_node">
+                    <span
+                    id="header_div_span1_span1"
+                    class="header_el"
+                    title="トップページへ移動します"
+                    style="font-size:1.25rem"
+                    onclick="javascript:func('null::url','/')"
+                    >Seed HP</span>
+                </span>
+                <span id="header_div_span2" class="header_el_top_node">
+                    <span
+                    id="header_div_span2_span1"
+                    class="header_el"
+                    title="ブログへ移動します"
+                    style="font-size:1rem"
+                    onclick="javascript:func('null::url','/article/blog')"
+                    >Blog</span>
+                </span>
+                <span id="header_div_span3" class="header_el_top_node">
+                    <span
+                    id="header_div_span3_span1"
+                    class="header_el"
+                    title="ブログリストへ移動します"
+                    style="font-size: 1rem;"
+                    onclick="javascript:func('null::url','/article/bloglist')"
+                    >BlogList</span>
+                </span>
+            </div>
+        </header>
+        <div id="div">
+  
+        </div>
+        <footer>
+          <a class="links_el header_el" href="https://x.com/seed_script">Seed X</a>
+        </footer>
+    </body>
+    <script>
+        /*
+        Result Code Rules
+        0b sabbbbbb bbbbcccc cccccccc dddddddd
+        s: CheckSum(0:ok 1:no)-----------------------------------1  bit
+        a: 0 (this program create error:0 else:1)----------------1  bit
+        b: Function ID-------------------------------------------10 bit
+        c: Function SIKIBETU ID(Extensions ID)-------------------12 bit
+        d: Result Code-------------------------------------------8  bit
+        */
+        const home=location.origin+"/seedhp/"
+        const thisPath="article/bloglist/"
+        function func(cmd,...parametor){//FunctionID:0000000000
+            if (cmd==="screen_scroll"){//sikibetuID:000000000000
+                try{
+                    const moveToX=parametor[0]
+                    const moveToY=parametor[1]
+                    if (moveToX===undefined||moveToY===undefined){
+                        return 0b10000000000000000000000000000000
+                    }
+                    if (typeof moveToX!=="number"||typeof moveToY!=="number"){
+                        return 0b10000000000000000000000000000001
+                    }
+                    window.scrollTo({top:moveToX,left:moveToY,behavior:"smooth"})
+                    return 0b00000000000000000000000000000000
+                }catch(e){
+                    return 0b10000000000000000000000000000010
+                }
+            }else if (cmd==="null::url"){//sikibetuID:000000000001
+                try{
+                    /**@type {string}*/
+                    const aurl=parametor[0]
+                    if (aurl.startsWith("http://")||aurl.startsWith("https://")){
+                        location.href=aurl
+                        return 0b00000000000000000000000100000000
+                    }else if (aurl.startsWith("/")){
+                        location.href=home+aurl.slice(1)
+                        return 0b00000000000000000000000100000001
+                    }else{
+                        location.href=home+thisPath+aurl
+                        return 0b00000000000000000000000100000010
+                    }
+                }catch(e){
+                    return 0b10000000000000000000000100000000
+                }
+            }
+        }
+    </script>
+</html>
